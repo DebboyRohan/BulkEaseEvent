@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Love Letter & Gift</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      h1 {
+        color: #ff4b6b;
+        margin-bottom: 1.5rem;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      input,
+      textarea {
+        padding: 0.5rem;
+        border: 1px solid #ff9a9e;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+      }
+      button {
+        background-color: #ff4b6b;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #ff3356;
+      }
+      .heart {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #ff4b6b;
+        transform: rotate(45deg);
+        animation: float 4s ease-in-out infinite;
+      }
+      .heart::before,
+      .heart::after {
+        content: "";
+        width: 20px;
+        height: 20px;
+        background: #ff4b6b;
+        border-radius: 50%;
+        position: absolute;
+      }
+      .heart::before {
+        left: -10px;
+      }
+      .heart::after {
+        top: -10px;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(45deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(45deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Send Love & Gifts</h1>
+      <form id="loveForm">
+        <input
+          type="text"
+          id="crushName"
+          placeholder="Your Crush's Name"
+          required
+        />
+        <textarea
+          id="letter"
+          placeholder="Your Love Letter"
+          required
+        ></textarea>
+        <input
+          type="tel"
+          id="phoneNumber"
+          placeholder="Your Crush's Phone Number"
+          required
+        />
+        <button type="submit">Send Love & Proceed to Gift</button>
+      </form>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      function createHearts() {
+        const container = document.querySelector("body");
+        for (let i = 0; i < 40; i++) {
+          const heart = document.createElement("div");
+          heart.classList.add("heart");
+          heart.style.left = `${Math.random() * 100}vw`;
+          heart.style.top = `${Math.random() * 100}vh`;
+          heart.style.animationDuration = `${Math.random() * 2 + 2.5}s`;
+          heart.style.opacity = Math.random();
+          container.appendChild(heart);
+        }
+      }
+
+      createHearts();
+
+      document
+        .getElementById("loveForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const crushName = document.getElementById("crushName").value;
+          const letter = document.getElementById("letter").value;
+          const phoneNumber = document.getElementById("phoneNumber").value;
+
+          // Here you would typically send this data to your server
+          console.log("Form submitted with:", {
+            crushName,
+            letter,
+            phoneNumber,
+          });
+
+          // Razorpay integration
+          var options = {
+            key: "YOUR_RAZORPAY_KEY",
+            amount: "50000",
+            currency: "INR",
+            name: "Love Gift",
+            description: "Gift for your crush",
+            image: "https://your-logo-url.png",
+            handler: function (response) {
+              alert("Payment successful! Your love gift will be sent.");
+            },
+            prefill: {
+              name: crushName,
+              contact: phoneNumber,
+            },
+            theme: {
+              color: "#ff4b6b",
+            },
+          };
+          var rzp = new Razorpay(options);
+          rzp.open();
+        });
+    </script>
+  </body>
+</html>
